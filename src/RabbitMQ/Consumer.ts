@@ -14,6 +14,7 @@ export const startRabbitConsumer = async () => {
 
         await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".many_readings");
         await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".notification");
+        await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".water_activities");
 
         console.log("Esperando mensajes del tópico:", CONFIG.topic);
 
@@ -25,7 +26,9 @@ export const startRabbitConsumer = async () => {
                 console.log("Mensaje recibido del tópico:", topicKey);
 
                 try{
-                    if(topicKey == CONFIG.topic + ".many_readings"){
+                    if (topicKey == CONFIG.topic + ".water_activities"){
+                        
+                    } else if(topicKey == CONFIG.topic + ".many_readings"){
                         sendSensorReadings(PayloadSensorReadingsSchema.parse(content));
                     } else if(topicKey == CONFIG.topic + ".notification"){
                         sendNotification(NotificationsSchema.parse(content));
