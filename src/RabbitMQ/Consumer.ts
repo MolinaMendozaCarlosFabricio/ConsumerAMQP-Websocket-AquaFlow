@@ -1,9 +1,10 @@
 import amqp from 'amqplib';
 import { CONFIG } from '../../config';
-import { sendSensorReadings } from '../Socket.io/SocketClient';
+import { sendSensorReadings, sendWaterActivities } from '../Socket.io/SocketClient';
 import { sendNotification } from '../Socket.io/SocketClient';
 import { PayloadSensorReadingsSchema } from '../models/Payload_SensorReadings';
 import { NotificationsSchema } from '../models/Notifications';
+import { WaterActivitiesListSchema } from '../models/WaterActivitiesList';
 
 export const startRabbitConsumer = async () => {
     try{
@@ -27,7 +28,7 @@ export const startRabbitConsumer = async () => {
 
                 try{
                     if (topicKey == CONFIG.topic + ".water_activities"){
-                        
+                        sendWaterActivities(WaterActivitiesListSchema.parse(content));
                     } else if(topicKey == CONFIG.topic + ".many_readings"){
                         sendSensorReadings(PayloadSensorReadingsSchema.parse(content));
                     } else if(topicKey == CONFIG.topic + ".notification"){
